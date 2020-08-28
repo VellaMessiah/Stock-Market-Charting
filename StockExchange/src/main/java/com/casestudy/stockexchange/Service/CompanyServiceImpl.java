@@ -8,9 +8,7 @@ import com.casestudy.stockexchange.Repositories.StockExchangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +25,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Optional<Company> findByCode(int code) {
+    public Optional<Company> findById(int code) {
         Optional<Company> company = companyRepository.findById(code);
         if(company.isPresent())
             return company;
@@ -55,27 +53,6 @@ public class CompanyServiceImpl implements CompanyService {
         return companyRepository.findAll();
     }
 
-    @Override
-    public List<StockExchange> addStockExchange(Integer companyId,Integer stockExchangeId) {
-        Optional<StockExchange> stockExchange = stockExchangeRepository.findById(stockExchangeId);
-        Optional<Company> company = companyRepository.findById(companyId);
-        if(stockExchange.isPresent() && company.isPresent() && checkStockExchange(company.get(),stockExchange.get())){
-            company.get().getStockExchangeList().add(stockExchange.get());
-            return company.get().getStockExchangeList();
-        }
-        return null;
-    }
 
-    private boolean checkStockExchange(Company company,StockExchange stockExchange){
-        List<StockExchange> stockExchangeList = company.getStockExchangeList();
-        if(stockExchange==null || stockExchangeList.isEmpty())
-            return false;
-        Iterator<StockExchange> it = stockExchangeList.iterator();
-        while(it.hasNext()){
-            StockExchange current = it.next();
-            if(stockExchange.getId()==current.getId())
-                return true;
-        }
-        return false;
-    }
+
 }
