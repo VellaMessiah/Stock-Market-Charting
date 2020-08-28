@@ -18,7 +18,6 @@ import java.util.*;
 @EqualsAndHashCode
 public class Company {
     @Id
-    @Column(name = "company_code")
     @EqualsAndHashCode.Include
     private int companyId;
 

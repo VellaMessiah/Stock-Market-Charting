@@ -20,7 +20,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class StockExchange {
     @Id
-    @Column(name="stockexchange_id")
+    @Column(name="stockexchangeId")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @EqualsAndHashCode.Include
     private int stockexchangeId;

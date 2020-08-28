@@ -16,10 +16,10 @@ import java.util.Objects;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class CompanyStockExchangeId implements Serializable {
-    @Column(name = "company_id")
+    @Column(name = "companyId")
     private int companyId;
 
-    @Column(name = "stock-exchange_id")
+    @Column(name = "stockexchangeId")
     private int stockExchangeId;
 
 }
