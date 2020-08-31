@@ -3,6 +3,7 @@ package com.casestudy.stockexchange.Service;
 import com.casestudy.stockexchange.Entity.Company;
 import com.casestudy.stockexchange.Entity.CompanyStockExchange;
 import com.casestudy.stockexchange.Entity.StockExchange;
+import com.casestudy.stockexchange.Repositories.CompanyRepository;
 import com.casestudy.stockexchange.Repositories.StockExchangeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,12 @@ public class StockExchangeServiceImpl implements StockExchangeService {
 
 
     private StockExchangeRepository stockExchangeRepository;
+    private CompanyRepository companyRepository;
 
     @Autowired
-    public StockExchangeServiceImpl(StockExchangeRepository stockExchangeRepository) {
+    public StockExchangeServiceImpl(StockExchangeRepository stockExchangeRepository, CompanyRepository companyRepository) {
         this.stockExchangeRepository = stockExchangeRepository;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -40,10 +43,8 @@ public class StockExchangeServiceImpl implements StockExchangeService {
 
     @Override
     public Company addCompanyToStockExchange(Company company, StockExchange stockExchange, String companyCode) {
-        CompanyStockExchange joinTableEntt= new CompanyStockExchange(company,stockExchange,companyCode);
-        company.addStockexchange(joinTableEntt);
-        stockExchange.addCompany(joinTableEntt);
-        return joinTableEntt.getCompany();
+        company.addStockExchange(stockExchange,companyCode);
+        return company;
     }
 
 
@@ -79,8 +80,8 @@ public class StockExchangeServiceImpl implements StockExchangeService {
         if(optional.isPresent()){
             StockExchange stockExchange = optional.get();
             CompanyStockExchange companyStockExchange = new CompanyStockExchange(company, stockExchange,companyCode);
-            company.addStockexchange(companyStockExchange);
-            stockExchange.addCompany(companyStockExchange);
+            stockExchange.addCompany(company,companyCode);
+            stockExchangeRepository.save(stockExchange);
         }
         return null;
     }

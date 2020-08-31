@@ -1,6 +1,7 @@
 package com.casestudy.stockexchange;
 
 import com.casestudy.stockexchange.Entity.Company;
+import com.casestudy.stockexchange.Entity.StockExchange;
 import com.casestudy.stockexchange.Repositories.DirectorRepository;
 import com.casestudy.stockexchange.Service.CompanyService;
 import com.casestudy.stockexchange.Service.StockExchangeService;
@@ -12,6 +13,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
 @ComponentScan("com.casestudy.stockexchange")
@@ -34,15 +39,22 @@ public class StockexchangeApplication implements CommandLineRunner {
     }
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
         Company c1 = companyService.findById(500112).get();
         Company c2 = companyService.findById(500113).get();
         Company c3 = companyService.findById(500114).get();
         stockExchangeService.addCompanytoStockExchangeById(c1,1,"APPL");
         stockExchangeService.addCompanytoStockExchangeById(c2,1,"HDFC");
-        stockExchangeService.addCompanytoStockExchangeById(c3,2,"CITI");
 
 
+        List<Company> list = stockExchangeService.getCompaniesByStockexchangeId(1);
+        if(list==null)
+            System.out.println("NULL LIST");
+        if(list.isEmpty())
+            System.out.println("NO COMPANIES");
+        for(Company c: list)
+            System.out.println(c.getCompanyName());
 
 
 

@@ -1,5 +1,7 @@
 package com.casestudy.stockexchange.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +24,7 @@ public class Sector {
 
     private String brief;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "sector", cascade = CascadeType.ALL, targetEntity = Company.class)
+    @JsonIgnoreProperties("sector")
+    @OneToMany( cascade = CascadeType.ALL, targetEntity = Company.class, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Company> companyList;
 }

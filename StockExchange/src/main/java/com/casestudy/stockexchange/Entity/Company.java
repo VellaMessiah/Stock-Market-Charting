@@ -1,6 +1,7 @@
 package com.casestudy.stockexchange.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,30 +40,17 @@ public class Company {
     @EqualsAndHashCode.Exclude
     private String description;
 
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "sector_id")
+    @JsonManagedReference
     @EqualsAndHashCode.Exclude
-    private Sector sector;
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CompanyStockExchange> listedInStockExchanges= new ArrayList<CompanyStockExchange>();
 
-
-   @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-   @EqualsAndHashCode.Exclude
-    private List<CompanyStockExchange> listedInStockExchanges;
-
-   @Transactional
-   public void addStockexchange(CompanyStockExchange input){
-       if(listedInStockExchanges.isEmpty()){
-           listedInStockExchanges.add(input);
-           return;
-       }
-       Iterator<CompanyStockExchange> it = listedInStockExchanges.iterator();
-       while(it.hasNext()){
-           CompanyStockExchange current = it.next();
-           if(current.equals(input)) return;
-       }
-       listedInStockExchanges.add(input);
+   public void addStockExchange(StockExchange stockExchange, String companyCode){
+       CompanyStockExchange companyStockExchange = new CompanyStockExchange(this,stockExchange,companyCode);
+       listedInStockExchanges.add(companyStockExchange);
+       stockExchange.getCompanies().add(companyStockExchange);
    }
+
 
 
 }

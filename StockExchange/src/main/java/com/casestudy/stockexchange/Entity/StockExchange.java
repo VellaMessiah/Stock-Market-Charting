@@ -1,6 +1,7 @@
 package com.casestudy.stockexchange.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +21,6 @@ import java.util.List;
 @EqualsAndHashCode
 public class StockExchange {
     @Id
-    @Column(name="stockexchangeId")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @EqualsAndHashCode.Include
     private int stockexchangeId;
@@ -40,21 +40,15 @@ public class StockExchange {
     @EqualsAndHashCode.Exclude
     private String remarks;
 
+
     @OneToMany(mappedBy = "stockexchange", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
-    private List<CompanyStockExchange> companies;
+    private List<CompanyStockExchange> companies= new ArrayList<CompanyStockExchange>();
 
-    @Transactional
-    public void addCompany(CompanyStockExchange input){
-        if(companies.isEmpty()){
-            companies.add(input);
-            return;
-        }
-        Iterator<CompanyStockExchange> it = companies.iterator();
-        while(it.hasNext()){
-            CompanyStockExchange current = it.next();
-            if(current.equals(input)) return;
-        }
-        companies.add(input);
+    public void addCompany(Company company, String companyCode){
+        CompanyStockExchange companyStockExchange = new CompanyStockExchange(company,this,companyCode);
+        companies.add(companyStockExchange);
+        company.getListedInStockExchanges().add(companyStockExchange);
     }
+
 }
